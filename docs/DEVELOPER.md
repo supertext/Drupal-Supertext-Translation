@@ -82,8 +82,11 @@ Then http://localhost:8080/user/login. To update Drupal or the modules:
 
 Service **Drupal** in the project *supertext-cms-demos-php*: source this repository
 (`main`), Dockerfile path `demo/Dockerfile`, health check `/healthz` (a static file, so it
-doesn't depend on Drupal's routing), region `ams`, database `drupal_demo` on the shared
-MySQL. `DEMO_*` and `SUPERTEXT_API_KEY` reference the shared values of the Contao service
+doesn't depend on Drupal's routing) with a 3600 s timeout (the first install takes 10–15
+minutes on Railway), region `ams`, database `drupal_demo` on the shared **MySQL-8**
+service (`DATABASE_URL=mysql://root:${{MySQL-8.MYSQL_ROOT_PASSWORD}}@${{MySQL-8.RAILWAY_PRIVATE_DOMAIN}}:3306/drupal_demo`).
+Use a database in the same region: the older *MySQL* service's volume is in the US, and
+with a few hundred queries per page Drupal took 20–60 s per page from `ams`. `DEMO_*` and `SUPERTEXT_API_KEY` reference the shared values of the Contao service
 (`${{Contao.DEMO_ADMIN_EMAIL}}` …). The container has no volume: uploaded files are lost on
 redeploy, content and configuration live in MySQL.
 
